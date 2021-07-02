@@ -74,11 +74,13 @@ public class CircularSinglyLinkedList<T> implements CircularLinkedList<T> {
             this.head = newNode;
             this.tail = newNode;
             this.current = newNode;
+            this.tail.setNext(newNode);
             this.size++;
             return;
         }
         this.tail.setNext(newNode);
         this.tail = newNode;
+        this.tail.setNext(this.head);
         this.size++;
     }
 
@@ -88,6 +90,7 @@ public class CircularSinglyLinkedList<T> implements CircularLinkedList<T> {
             this.current = newNode;
         }
         this.head = newNode;
+        this.tail.setNext(this.head);
         this.size++;
     }
 
@@ -98,6 +101,10 @@ public class CircularSinglyLinkedList<T> implements CircularLinkedList<T> {
         }
         if (i == 0) {
             addFirst(obj);
+            return;
+        }
+        if (i == this.size) {
+            add(obj);
             return;
         }
         Node temp = this.head;
@@ -159,6 +166,10 @@ public class CircularSinglyLinkedList<T> implements CircularLinkedList<T> {
             removeFirst();
             return;
         }
+        if (i == this.size()) {
+            removeLast();
+            return;
+        }
         for (int j = 0; j < i; j++) {
             temp = temp.next();
         }
@@ -169,25 +180,32 @@ public class CircularSinglyLinkedList<T> implements CircularLinkedList<T> {
     }
 
     public void removeFirst() {
-        Node temp = this.head;
-        if (this.current == temp) {
-            this.current = this.head.next();
-        }
-        if (this.tail == temp) {
+        if (this.size == 1) {
+            this.head = null;
+            this.current = null;
             this.tail = null;
+        } else {
+            Node temp = this.head;
+            this.head = this.head.next();
+            this.tail.setNext(this.head);
+            temp.setNext(null);
         }
-        this.head = this.head.next();
-        temp.setNext(null);
         this.size--;
     }
 
     public void removeLast() {
-        Node temp = this.head;
-        for (int i = 0; i < this.size() - 1; i++) {
-            temp = temp.next();
+        if (this.size == 1) {
+            this.head = null;
+            this.current = null;
+            this.tail = null;
+        } else {
+            Node temp = this.head;
+            for (int i = 0; i < this.size() - 1; i++) {
+                temp = temp.next();
+            }
+            this.tail = temp;
+            this.tail.setNext(this.head);
         }
-        this.tail = temp;
-        this.tail.setNext(null);
         this.size--;
     }
 }

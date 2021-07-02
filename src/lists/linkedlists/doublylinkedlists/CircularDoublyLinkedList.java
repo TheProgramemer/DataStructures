@@ -84,12 +84,16 @@ public class CircularDoublyLinkedList<T> implements CircularLinkedList<T> {
             this.head = newNode;
             this.tail = newNode;
             this.current = newNode;
+            this.head.setPrev(this.tail);
+            this.tail.setNext(this.head);
             this.size++;
             return;
         }
         newNode.setPrev(this.tail);
         this.tail.setNext(newNode);
         this.tail = newNode;
+        this.tail.setNext(this.head);
+        this.head.setPrev(this.tail);
         this.size++;
     }
 
@@ -100,6 +104,8 @@ public class CircularDoublyLinkedList<T> implements CircularLinkedList<T> {
         }
         this.head.setPrev(newNode);
         this.head = newNode;
+        this.tail.setNext(this.head);
+        this.head.setPrev(this.tail);
         this.size++;
     }
 
@@ -110,6 +116,10 @@ public class CircularDoublyLinkedList<T> implements CircularLinkedList<T> {
         }
         if (i == 0) {
             addFirst(obj);
+            return;
+        }
+        if (i == this.size) {
+            add(obj);
             return;
         }
         Node temp = this.head;
@@ -184,6 +194,10 @@ public class CircularDoublyLinkedList<T> implements CircularLinkedList<T> {
             removeFirst();
             return;
         }
+        if (i == this.size) {
+            removeLast();
+            return;
+        }
         for (int j = 0; j < i; j++) {
             temp = temp.next();
         }
@@ -196,26 +210,33 @@ public class CircularDoublyLinkedList<T> implements CircularLinkedList<T> {
     }
 
     public void removeFirst() {
-        Node temp = this.head;
-        if (this.current == temp) {
-            this.current = this.head.next();
-        }
-        if (this.tail == temp) {
+        if (this.size == 1) {
+            this.head = null;
+            this.current = null;
             this.tail = null;
-        }
-        this.head = this.head.next();
-        if (this.head != null) {
-            this.head.setPrev(null);
-            temp.setNext(null);
+        } else {
+            Node temp = this.head;
+            this.head = this.head.next();
+            if (this.head != null) {
+                this.head.setPrev(this.tail);
+                this.tail.setNext(this.head);
+                temp.setNext(null);
+            }
         }
         this.size--;
     }
 
     public void removeLast() {
-        this.tail = this.tail.prev();
-        if (this.tail != null) {
-            this.tail.next().setPrev(null);
-            this.tail.setNext(null);
+        if (this.size == 1) {
+            this.head = null;
+            this.current = null;
+            this.tail = null;
+        } else {
+            this.tail = this.tail.prev();
+            if (this.tail != null) {
+                this.head.setPrev(this.tail);
+                this.tail.setNext(this.head);
+            }
         }
         this.size--;
     }
