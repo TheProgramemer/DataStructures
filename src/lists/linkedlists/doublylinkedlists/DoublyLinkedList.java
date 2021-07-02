@@ -58,18 +58,28 @@ public class DoublyLinkedList<T> implements List<T> {
 
     @Override
     public int indexOf(T obj) {
-        Node temp = this.head;
-        for (int i = 0; i < this.size(); i++) {
-            if (((T) temp.value()).equals(obj)) {
+        int i = 0;
+        int j = this.size - 1;
+        Node frontTracker = this.head;
+        Node tailTracker = this.tail;
+        while (i <= j) {
+            if (((T) frontTracker.value()).equals(obj)) {
                 return i;
             }
+            if (((T) tailTracker.value()).equals(obj)) {
+                return j;
+            }
+            i++;
+            frontTracker = frontTracker.next();
+            j--;
+            tailTracker = tailTracker.prev();
         }
         return -1;
     }
 
     @Override
     public void add(T obj) {
-        Node newNode = new Node(obj, null);
+        Node newNode = new Node(obj, null, null);
         if (this.head == null) {
             this.head = newNode;
             this.tail = newNode;
@@ -77,16 +87,18 @@ public class DoublyLinkedList<T> implements List<T> {
             this.size++;
             return;
         }
+        newNode.setPrev(this.tail);
         this.tail.setNext(newNode);
         this.tail = newNode;
         this.size++;
     }
 
     public void addFirst(T obj) {
-        Node newNode = new Node(obj, this.head);
+        Node newNode = new Node(obj, this.head, null);
         if (this.head == this.current) {
             this.current = newNode;
         }
+        this.head.setPrev(newNode);
         this.head = newNode;
         this.size++;
     }
@@ -104,7 +116,8 @@ public class DoublyLinkedList<T> implements List<T> {
         for (int j = 0; j < i; j++) {
             temp = temp.next();
         }
-        Node newNode = new Node(obj, temp.next());
+        Node newNode = new Node(obj, temp.next(), temp);
+        temp.next().setPrev(newNode);
         temp.setNext(newNode);
         this.size++;
     }
@@ -152,6 +165,18 @@ public class DoublyLinkedList<T> implements List<T> {
         return this.current.hasNext();
     }
 
+    public T prev() throws Exception {
+        if (!this.hasPrev()) {
+            throw new Exception();
+        }
+        this.current = this.current.prev();
+        return (T) this.current.value();
+    }
+
+    public boolean hasPrev() {
+        return this.current.hasPrev();
+    }
+
     @Override
     public void remove(int i) {
         Node temp = this.head;
@@ -163,8 +188,10 @@ public class DoublyLinkedList<T> implements List<T> {
             temp = temp.next();
         }
         Node toRemove = temp.next();
+        toRemove.next().setPrev(temp);
         temp.setNext(toRemove.next());
         toRemove.setNext(null);
+        toRemove.setPrev(null);
         this.size--;
     }
 
@@ -177,17 +204,19 @@ public class DoublyLinkedList<T> implements List<T> {
             this.tail = null;
         }
         this.head = this.head.next();
-        temp.setNext(null);
+        if (this.head != null) {
+            this.head.setPrev(null);
+            temp.setNext(null);
+        }
         this.size--;
     }
 
     public void removeLast() {
-        Node temp = this.head;
-        for (int i = 0; i < this.size() - 1; i++) {
-            temp = temp.next();
+        this.tail = this.tail.prev();
+        if (this.tail != null) {
+            this.tail.next().setPrev(null);
+            this.tail.setNext(null);
         }
-        this.tail = temp;
-        this.tail.setNext(null);
         this.size--;
     }
 }
