@@ -4,7 +4,7 @@ public class HashMap<K, V> implements Dictionary {
     private Entry[] entries;
     private int size;
     public HashMap() {
-        this.entries = new Entry[100000];
+        this.entries = new Entry[99999999];
         this.size = 0;
     }
 
