@@ -4,15 +4,15 @@ import lists.linkedlists.doublylinkedlists.CircularDoublyLinkedList;
 import lists.linkedlists.doublylinkedlists.DoublyLinkedList;
 import lists.linkedlists.singlylinkedlists.CircularSinglyLinkedList;
 import lists.linkedlists.singlylinkedlists.SinglyLinkedList;
+import lists.stacks.Stack;
 
 public class DataStructuresTest {
     public static void main(String[] args) throws Exception {
-        List<String> test = new CircularDoublyLinkedList<>();
-        test.add("Hello");
-        System.out.println(test.get(0));
-        test.remove(0);
-        test.add("Hi");
-        System.out.println(test.get(0));
-        System.out.println(test.size());
+        Stack<String> test = new Stack<>();
+        test.push("Hello");
+        test.push("Hi");
+        System.out.println(test.peek());
+        System.out.println(test.pop());
+        System.out.println(test.pop());
     }
 }
